@@ -1,0 +1,142 @@
+let towers = [];
+let maxStacks = 3;
+const maxDisks = 3;
+let disksInitialized = 0;
+let initStackIdx = 0;
+
+let pickedDisk;
+
+class Tower {
+    constructor(id){
+        this.id = id;
+        this.disks = [];
+    }
+
+    getLastAction() {
+        return this.lastAction;
+    }
+
+    peek() {
+        return this.disks[this.disks.length - 1];
+    }
+
+    push(disk) {
+        let diskOnTop = this.peek();
+        if (! diskOnTop || diskOnTop.order < disk.order) {
+            disk.setTowerId(this.id)
+            this.disks.push(disk);
+            this.lastAction = 'PUSH';
+        } else {
+            throw 'UNABLE-TO-PLACE';
+        }
+    }
+
+    pop() {
+        this.lastAction = 'POP';
+        
+        return this.disks.pop();
+    }
+}
+class Disk {
+    setTowerId(id) {
+        this.towerId = id;
+    }
+    towerId(){
+        return this.towerId;
+    }
+    constructor(order) {
+        this.order = order;
+    }
+}
+
+function initialize() {
+   disksInitialized = 0;
+   for(i=0; i < maxStacks; i++) {
+       towers[i] = new Tower(i+1);
+   }
+
+   for (j = 0; j < maxDisks; j++) {
+       towers[initStackIdx].push(createDisk());
+   }
+
+   render();
+}
+
+
+function createDisk() {
+   if (disksInitialized < maxDisks) {
+       return new Disk(++disksInitialized);
+   }
+}
+
+initialize();
+
+function getTowerWithUIId(id) {
+   return towers[parseInt(id.replace('stack-', '')) - 1];
+}
+
+$('.container').click((event) => {
+   if (! pickedDisk) {
+        let fromID = $(event.target).closest('.container').find('.stack').attr('id');
+        let fromStack = getTowerWithUIId(fromID);
+        
+        pickedDisk = fromStack.pop();
+   } else {    
+        let toID = $(event.target).closest('.container').find('.stack').attr('id');
+        let toStack = getTowerWithUIId(toID);
+        
+        try {
+            toStack.push(pickedDisk);
+        } catch(e) {
+            if (e === 'UNABLE-TO-PLACE') {
+                towers[pickedDisk.towerId].push(pickedDisk);
+            }
+        }
+        
+        pickedDisk = undefined;
+   }     
+   render();
+})
+
+function summarizeStacksToConsole() {
+    console.log('Total stacks: ' + towers.length);
+
+    for (i = 0; i < towers.length; i++) {
+        console.log('Total disks in tower['+i+']: ' + towers[i].length);
+        towers[i].disks.map(d => console.log(d.order));
+    }
+}
+render();
+
+function render() {
+    $('.steves-place').empty();
+    if (pickedDisk) {
+        uiTower = $('#stack-' + pickedDisk.towerId);
+        uiTower.closest('.container').css('background-color', '#efefef');
+        
+        if (towers[pickedDisk.towerId - 1].getLastAction() === 'POP') {
+            uiTower.closest('.container').find('.steves-place').append('<img src="assets/steve-raised-hands.png" >');
+            towers[i].lastAction = undefined;
+        } 
+    } else {
+        for (i = 0; i < towers.length; i++) {
+            
+            uiTower = $('#stack-' + towers[i].id);
+            uiTower.closest('.container').css('background-color', '');
+            if (towers[i].getLastAction() === 'PUSH') {
+                uiTower.closest('.container').find('.steves-place').append('<img src="assets/steve-lowered-hands.png" >');
+                towers[i].lastAction = undefined;
+            }
+
+            elems = [];
+            
+            // towers[i].disks.map(d => elems.push($('<tr>').append($('<td align="center">').text('#'.repeat(((maxDisks + 1) - d.order) * 3)))));
+            towers[i].disks.map(d => elems.push($('<tr>').append($('<td align="center">').append('<img src="assets/minecraft-16x16-icon-8.png" style="width:'+ ((maxDisks + 1) - d.order) * 60 +'px; height: 20px; ">'))));
+            uiTower.find('tbody').empty();
+            elems.map(e => uiTower.find('tbody').append(e));
+            
+        }
+    }
+}
+
+$('#reload').click(initialize);

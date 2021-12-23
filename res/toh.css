@@ -1,0 +1,32 @@
+.stack {
+   position:relative;
+   
+   border: 1px;
+   border-color: black;
+   cursor: pointer;
+   height: 50%;
+}
+
+.disk {
+    border-radius: 5px;
+}
+
+.container {
+    
+    border: 1px solid black;
+}
+
+body {
+	height: 100vh;
+	flex-direction: column;
+	background-color: #fff;
+	background-image: url('https://i.ibb.co/bH3JY30/IE1G7Lr.png');
+	background-size: cover;
+	background-position: center;
+    
+	position: relative;
+}
+
+.steves-place {
+    height: 50%;
+}
