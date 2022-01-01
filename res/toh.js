@@ -146,7 +146,7 @@ function render() {
             elems = [];
             
             // towers[i].disks.map(d => elems.push($('<tr>').append($('<td align="center">').text('#'.repeat(((maxDisks + 1) - d.order) * 3)))));
-            towers[i].disks.map(d => elems.push($('<tr>').append($('<td align="center">').append('<img src="assets/minecraft-16x16-icon-8.png" style="width:'+ ((maxDisks + 1) - d.order) * 60 +'px; height: 20px; ">'))));
+            towers[i].disks.map(d => elems.push($('<tr>').append($('<td align="center">').append('<p style="font-size:8pt;"><img src="assets/minecraft-16x16-icon-8.png" style="width:'+ ((maxDisks + 1) - d.order) * 60 +'px; height: 20px; ">'+((maxDisks + 1) - d.order)+'</p>'))));
             uiTower.find('tbody').empty();
             elems.map(e => uiTower.find('tbody').append(e));
             
