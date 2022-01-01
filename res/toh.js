@@ -1,6 +1,21 @@
+let queryStringMap;
+
+function getFromQueryString(key) {
+    if (!queryStringMap){
+        queryStringMap = new Object();
+        location.search.replaceAll("?", "").split("&")
+            .forEach(x=>{
+                kv=x.split("=");
+                queryStringMap[kv[0]] = kv[1];
+            });
+    }
+    
+    return queryStringMap[key];
+}
+
 let towers = [];
 let maxStacks = 3;
-const maxDisks = 3;
+const maxDisks = parseInt(getFromQueryString("diskCount") || "3");
 let disksInitialized = 0;
 let initStackIdx = 0;
 
@@ -112,7 +127,7 @@ function render() {
     $('.steves-place').empty();
     if (pickedDisk) {
         uiTower = $('#stack-' + pickedDisk.towerId);
-        uiTower.closest('.container').css('background-color', '#efefef');
+        uiTower.closest('.container').css('background-color', 'lightyellow');
         
         if (towers[pickedDisk.towerId - 1].getLastAction() === 'POP') {
             uiTower.closest('.container').find('.steves-place').append('<img src="assets/steve-raised-hands.png" >');
@@ -140,3 +155,13 @@ function render() {
 }
 
 $('#reload').click(initialize);
+
+setTheme();
+
+function setTheme() {
+    let availableBackgrounds=['bg-1.jpg', 'bg-2.jpg', 'bg-3.jpg', 'bg-4.jpg', 'bg-5.jpg', 
+                              'bg-6.jpg', 'bg-7.jpg', 'bg-8.jpg', 'bg-9.png', 'bg-10.jpg'];
+
+    $('body')
+      .css('background-image', 'url("assets/'+ availableBackgrounds[Math.floor(Math.random() * 10)] +'")');
+}
