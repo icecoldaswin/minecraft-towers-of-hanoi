@@ -15,7 +15,7 @@ function getFromQueryString(key) {
 
 let towers = [];
 let maxStacks = 3;
-const maxDisks = parseInt(getFromQueryString("diskCount") || "3");
+let maxDisks = parseInt(getFromQueryString("diskCount") || "3");
 let disksInitialized = 0;
 let initStackIdx = 0;
 
@@ -154,6 +154,9 @@ function render() {
     }
 }
 
+$('#level-up').click(() => { if (maxDisks <= 10) {maxDisks += 1; initialize();}});
+$('#level-down').click(() => { if (maxDisks >= 1) {maxDisks -= 1; initialize();}});
+
 $('#reload').click(initialize);
 
 setTheme();
@@ -165,3 +168,4 @@ function setTheme() {
     $('body')
       .css('background-image', 'url("assets/'+ availableBackgrounds[Math.floor(Math.random() * 10)] +'")');
 }
+
